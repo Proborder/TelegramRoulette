@@ -89,16 +89,9 @@ function applyPromoCode() {
     if (!promoCode) {
         return;
     }
-    
-    try {
-        Telegram.WebApp.sendData(JSON.stringify({
-            action: "validate_promo",
-            promo_code: promoCode
-        }));
-        console.log("Данные отправлены!");
-    } catch (e) {
-        console.error("Ошибка отправки:", e);
-    }
+
+    const promo = { action: "validate_promo", promo_code: promoCode };
+    Telegram.WebApp.postEvent("validate_promo", JSON.stringify(promo));
     
     promoInput.value = '';
 }
@@ -107,7 +100,7 @@ function applyPromoCode() {
 Telegram.WebApp.onEvent('messageReceived', (event) => {
     const response = JSON.parse(event.data);
     
-    if (response.status === "success1") {
+    if (response.status === "success") {
         spinsLeft += response.spins;
         updateSpinsCounter();
     }
