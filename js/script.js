@@ -96,13 +96,16 @@ function applyPromoCode() {
     promoInput.value = '';
 }
 
-// Handle message received from bot
-Telegram.WebApp.onEvent('messageReceived', (event) => {
-    const response = JSON.parse(event.data);
-    
-    if (response.status === "success") {
-        spinsLeft += response.spins;
-        updateSpinsCounter();
+// Ждем сообщения от бота
+Telegram.WebApp.onEvent('messageReceived', (msg) => {
+    if (msg.text.startsWith('webapp_response:')) {
+        const response = JSON.parse(msg.text.replace('webapp_response:', ''));
+        
+        // Обновляем интерфейс WebApp
+        if (response.status === "success") {
+            spinsLeft += response.spins;
+            updateSpinsCounter();
+        }
     }
 });
 
